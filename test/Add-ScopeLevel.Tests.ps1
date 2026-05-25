@@ -9,7 +9,7 @@ if((Test-Path .changes -Type Leaf) -and
 Set-StrictMode -Version Latest
 $module = Join-Path ($PSScriptRoot |Split-Path) src .publish *.psd1 |Get-Item
 Import-Module $module -Force
-InModuleScope ModernConveniences {
+InModuleScope Unicodery {
 	Describe 'Add-ScopeLevel' -Tag Add-ScopeLevel,Add,ScopeLevel {
 		Context 'Convert a scope level to account for another call stack level' {
 			It 'Should calculate local scope (internal to module)' {
