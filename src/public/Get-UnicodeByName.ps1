@@ -43,7 +43,6 @@ Get-UnicodeByName.ps1 BEL
 (beeps)
 #>
 
-#Requires -Version 3
 [CmdletBinding()][OutputType([string])] Param(
 # The name or alias of a Unicode character.
 [Parameter(ParameterSetName='Name',Position=0,Mandatory=$true,ValueFromPipeline=$true)][string] $Name,

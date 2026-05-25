@@ -32,7 +32,6 @@ https://emojipedia.org/variation-selector-16/
 <three networked computers> Network
 #>
 
-#Requires -Version 3
 [CmdletBinding()][OutputType([string])] Param(
 # The integer value of a Unicode codepoint to convert into a .NET string.
 [Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true)][int] $Codepoint,

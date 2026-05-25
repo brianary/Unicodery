@@ -260,7 +260,6 @@ IsWhiteSpace        : False
 IsWord              : True
 #>
 
-#Requires -Version 7
 #TODO: finish documenting params
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter','',
 Justification='The values are captured in function bodies.')]

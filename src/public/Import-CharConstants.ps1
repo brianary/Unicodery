@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Imports characters by name as constants into the current scope.
 
@@ -20,7 +20,6 @@ Import-CharConstants.ps1 NL :UP: HYPHEN-MINUS 'EN DASH' '&mdash;' '&copy;' -Scop
 Creates constants in the context of the current script for the named characters.
 #>
 
-#Requires -Version 7
 [CmdletBinding()] Param(
 # The control code abbreviation, Unicode name, HTML entity, or GitHub name of the character to create a constant for.
 # "NL" will use the newline appropriate to the environment.

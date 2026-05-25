@@ -21,7 +21,6 @@ Get-UnicodeName.ps1 32
 SPACE
 #>
 
-#Requires -Version 3
 [CmdletBinding()][OutputType([string])] Param(
 # The numeric value of the Unicode character.
 [Parameter(ParameterSetName='CodePoint',Position=0,Mandatory=$true,ValueFromPipeline=$true)][int] $CodePoint,

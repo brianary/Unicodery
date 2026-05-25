@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Returns the current (cached) Unicode character data.
 
@@ -32,7 +32,6 @@ Get-UnicodeData.ps1 |Export-Csv data/UnicodeData.csv
 Saves the current Unicode data as a CSV file.
 #>
 
-#Requires -Version 7
 [CmdletBinding()][OutputType([pscustomobject])] Param(
 # The location of the latest Unicode data.
 [uri] $Url = 'https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt',
