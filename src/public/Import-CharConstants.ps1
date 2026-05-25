@@ -9,13 +9,10 @@ System.String containing a character name.
 Unicode
 
 .LINK
-Add-ScopeLevel.ps1
-
-.LINK
-Get-UnicodeByName.ps1
+Get-UnicodeByName
 
 .EXAMPLE
-Import-CharConstants.ps1 NL :UP: HYPHEN-MINUS 'EN DASH' '&mdash;' '&copy;' -Scope Script
+Import-CharConstants NL :UP: HYPHEN-MINUS 'EN DASH' '&mdash;' '&copy;' -Scope Script
 
 Creates constants in the context of the current script for the named characters.
 #>
@@ -37,7 +34,7 @@ for characters that support both a simple text presentation as well as a color e
 )
 Begin
 {
-    $level = $Scope |Add-ScopeLevel.ps1 |Add-ScopeLevel.ps1
+    $level = $Scope |Add-ScopeLevel #|Add-ScopeLevel
 
     filter Add-CharacterConstant
     {
@@ -46,7 +43,7 @@ Begin
         [Parameter(Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][Alias('Value')][string] $CharacterName
         )
         $name = $Alias.Trim(':')
-        $char = $CharacterName -eq 'NL' ? [Environment]::NewLine : (Get-UnicodeByName.ps1 -Name $CharacterName -AsEmoji:$AsEmoji)
+        $char = $CharacterName -eq 'NL' ? [Environment]::NewLine : (Get-UnicodeByName -Name $CharacterName -AsEmoji:$AsEmoji)
         $existing = Get-Variable -Name $name -Scope $level -ErrorAction Ignore
         if($existing -and ($existing.Options -eq 'Constant') -and ($existing.Value -eq $char)) {return}
         Set-Variable -Name $name -Value $char -Scope $level -Option Constant -Description $CharacterName

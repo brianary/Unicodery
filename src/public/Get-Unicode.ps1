@@ -40,6 +40,12 @@ Appends a U+FE0F VARIATION SELECTOR-16 suffix to the character, which suggests a
 for characters that support both a simple text presentation as well as a color emoji-style one.
 #>
 [switch] $AsEmoji,
+<#
+Appends a U+FE0E VARIATION SELECTOR-15 suffix to the character, which suggests a non-emoji text
+presentation for characters that support both a simple text presentation as well as a color
+emoji-style one.
+#>
+[Alias('NotEmoji','AsPlainText')][switch] $AsText,
 # Outputs the codepoint as a usable PowerShell string literal.
 [switch] $AsStringLiteral
 )
@@ -48,6 +54,7 @@ Process
 {
 	[char]::ConvertFromUtf32($Codepoint).GetEnumerator() |ForEach-Object {$c += $_}
 	if($AsEmoji) {$c += 0xFE0F}
+	elseif($AsText) {$c += 0xFE0E}
 }
 End
 {

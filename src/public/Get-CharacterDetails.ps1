@@ -212,17 +212,17 @@ https://msdn.microsoft.com/library/system.io.path.getinvalidfilenamechars.aspx
 https://docs.microsoft.com/dotnet/core/compatibility/3.1-5.0#unicode-category-changed-for-some-latin-1-characters
 
 .EXAMPLE
-Get-CharacterDetails.ps1 ASCII |Out-GridView
+Get-CharacterDetails ASCII |Out-GridView
 
 Learn everything about 7-bit ASCII, the first 128 characters in the Unicode standard.
 
 .EXAMPLE
-Get-CharacterDetails.ps1 GeneralPunctuation -IsSymbol
+Get-CharacterDetails GeneralPunctuation -IsSymbol
 
 Returns the two characters in the GeneralPunctuation block categorized as symbols.
 
 .EXAMPLE
-Get-CharacterDetails.ps1 ASCII -IsWord -NotLetter -NotDigit
+Get-CharacterDetails ASCII -IsWord -NotLetter -NotDigit
 
 
 Character           : _
@@ -771,7 +771,7 @@ VerticalForms
 			Character           = $c
 			Value               = [int]$c
 			CodePoint           = 'U+{0:X4}' -f [int]$c
-			UnicodeName         = Get-UnicodeName.ps1 ([int]$c)
+			UnicodeName         = Get-UnicodeName ([int]$c)
 			UnicodeBlock        = ''
 			MatchesBlock        = ''
 			UnicodeCategory     = [char]::GetUnicodeCategory($c)

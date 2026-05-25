@@ -27,23 +27,25 @@ Unicode
 https://www.unicode.org/L2/L1999/UnicodeData.html
 
 .EXAMPLE
-Get-UnicodeData.ps1 |Export-Csv data/UnicodeData.csv
+Get-UnicodeData |Export-Csv data/UnicodeData.csv
 
 Saves the current Unicode data as a CSV file.
 #>
 
 [CmdletBinding()][OutputType([pscustomobject])] Param(
-# The location of the latest Unicode data.
+# The source location of the latest Unicode data.
 [uri] $Url = 'https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt',
+# The local location to cache the data to.
 [string] $DataFile = (Join-Path ([io.path]::GetTempPath()) ($Url.Segments[-1]))
 )
 
 function Save-Data
 {
+	[CmdletBinding()] Param()
     if(!(Test-Path $DataFile -Type Leaf))
     {
         $http = Invoke-WebRequest $Url -OutFile $DataFile -PassThru
-        Write-Information "Downloaded $Url to $(Join-Path $PWD $DataFile)"
+        Write-Information "Downloaded $Url to $DataFile"
         [datetime] $lastmod = "$($http.Headers['Last-Modified'])"
         (Get-Item $DataFile).LastWriteTime = $lastmod
     }
@@ -62,6 +64,7 @@ function Save-Data
 
 function Read-Data
 {
+	[CmdletBinding()] Param()
 	Import-Csv $DataFile -Delimiter ';' -Header Value,Name,Catgory,CombiningClass,BidirectionalCategory,
 		DecompositionMapping,DecimalDigitValue,DigitValue,NumericValue,Mirrored,OldName,Comment,
 		Upper,Lower,Title

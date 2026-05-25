@@ -18,27 +18,27 @@ https://www.unicode.org/Public/UCD/latest/ucd/NameAliases.txt
 https://html.spec.whatwg.org/multipage/named-characters.html
 
 .EXAMPLE
-Get-UnicodeByName.ps1 hyphen-minus
+Get-UnicodeByName hyphen-minus
 
 -
 
 .EXAMPLE
-Get-UnicodeByName.ps1 slash
+Get-UnicodeByName slash
 
 /
 
 .EXAMPLE
-Get-UnicodeByName.ps1 :zero:
+Get-UnicodeByName :zero:
 
 [0]
 
 .EXAMPLE
-Get-UnicodeByName.ps1 '&amp;'
+Get-UnicodeByName '&amp;'
 
 &
 
 .EXAMPLE
-Get-UnicodeByName.ps1 BEL
+Get-UnicodeByName BEL
 
 (beeps)
 #>
@@ -56,7 +56,7 @@ for characters that support both a simple text presentation as well as a color e
 )
 Begin
 {
-	$basename = Join-Path -Path $PSScriptRoot -ChildPath data -AdditionalChildPath UnicodeByName
+	$basename = Join-Path $PSScriptRoot data UnicodeByName
 	$cc = ConvertFrom-StringData (Get-Content "$basename.cc.txt" -Raw)
 	$codepoint = ConvertFrom-StringData (Get-Content "$basename.txt" -Raw)
 	$html = Get-Content "$basename.html.json" -Raw |ConvertFrom-Json -AsHashtable
@@ -77,7 +77,7 @@ Process
 			'10E4','10E5','10E6','10E7','10E8','10E9','10EA','10EB','10EC','10ED','10EE','10EF','10F0','10F1','10F2',
 			'10F3','10F4','10F5','2016','314A','314B','314D','3209','320A','320C','3269','326A','326C','33B7','FFBA',
 			'FFBB','FFBD'
-		Get-UnicodeData.ps1 |
+		Get-UnicodeData |
 			ForEach-Object {
 				if($_.OldName -and $_.Value -notin $conflictingOldNames){$_.OldName+'='+$_.Value}
 				if($_.Name -ne '<control>'){$_.Name+'='+$_.Value}

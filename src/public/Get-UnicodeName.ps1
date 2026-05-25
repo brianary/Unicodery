@@ -16,7 +16,7 @@ Unicode
 https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt
 
 .EXAMPLE
-Get-UnicodeName.ps1 32
+Get-UnicodeName 32
 
 SPACE
 #>
@@ -41,7 +41,7 @@ Process
 	{
 		Update
 		{
-			Get-UnicodeData.ps1 |
+			Get-UnicodeData |
 				Select-Object Value,@{n='Name';e={
 					$hex = '{0:X4}' -f $_.Value
 					$cc.ContainsKey($hex) ? $cc[$hex] : $_.Name
@@ -52,7 +52,7 @@ Process
 		}
 		Character
 		{
-			return $Character.GetEnumerator() |ForEach-Object {[int]$_} |Get-UnicodeName.ps1
+			return $Character.GetEnumerator() |ForEach-Object {[int]$_} |Get-UnicodeName
 		}
 		default
 		{

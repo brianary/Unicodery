@@ -39,6 +39,7 @@ Export-ModuleMember -Function $($public.BaseName -join ',')
 	Push-Location "$PSScriptRoot/../src"
 	New-Item .publish -Type Directory -ErrorAction Ignore |Out-Null
 	Copy-Item *.psd1 .publish
+	Copy-Item data .publish -Recurse -Force
 }
 Process
 {
