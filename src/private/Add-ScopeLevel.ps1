@@ -50,7 +50,7 @@ Global
 )
 Process
 {
-	$offset = $Internal ? 1 : 2
+	$offset = $Internal ? 1 : 3
 	if($Scope -match '\A\d+\z') {return "$($offset+[int]$Scope)"}
 	switch($Scope)
 	{
@@ -65,7 +65,7 @@ Process
 			{
 				if($stack[$i].Command -and $stack[$i].FunctionName -like '<ScriptBlock>*') {return "$($offset+$i-2)"}
 			}
-			Stop-ThrowError 'Unable to find Script scope' -Argument Scope
+			throw 'Unable to find Script scope'
 		}
 	}
 }

@@ -34,7 +34,7 @@ for characters that support both a simple text presentation as well as a color e
 )
 Begin
 {
-    $level = $Scope |Add-ScopeLevel #|Add-ScopeLevel
+    $level = $Scope |Add-ScopeLevel
 
     filter Add-CharacterConstant
     {
