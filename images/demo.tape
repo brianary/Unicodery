@@ -2,7 +2,7 @@
 Output demo.gif
 Hide
 Set Shell pwsh
-Type "Import-Module ../src/.publish/Unicodery.psd1"
+Type "Import-Module ../.publish/Unicodery.psd1"
 Enter
 Type "Clear-Host"
 Enter

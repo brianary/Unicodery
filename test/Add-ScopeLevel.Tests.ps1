@@ -7,7 +7,7 @@ if((Test-Path .changes -Type Leaf) -and
 	!@(Get-Content .changes |Get-Item |Select-Object -ExpandProperty Name |
 		Where-Object {$_.StartsWith("$(($MyInvocation.MyCommand.Name -split '\.',2)[0]).")})) {return}
 Set-StrictMode -Version Latest
-$module = Join-Path ($PSScriptRoot |Split-Path) src .publish *.psd1 |Get-Item
+$module = Join-Path ($PSScriptRoot |Split-Path) .publish *.psd1 |Get-Item
 Import-Module $module -Force
 InModuleScope Unicodery {
 	Describe 'Add-ScopeLevel' -Tag Add-ScopeLevel,Add,ScopeLevel {
