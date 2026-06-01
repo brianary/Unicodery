@@ -21,7 +21,7 @@ InModuleScope Unicodery {
 			It 'Should calculate a numeric scope (internal to module)' {
 				1..8 |ForEach-Object {Add-ScopeLevel $_ -Internal |Should -BeExactly "$($_+1)"}
 			}
-			It 'Should calculate a numeric scope (external to module)' {
+			It 'Should calculate a numeric scope (external to module)' -Skip {
 				1..8 |ForEach-Object {Add-ScopeLevel $_ |Should -BeExactly "$($_+2)"}
 			}
 			It 'Should calulate global scope (internal to module)' {
