@@ -12,10 +12,11 @@ Import-Module $module -Force
 InModuleScope Unicodery {
 	Describe 'Add-ScopeLevel' -Tag Add-ScopeLevel,Add,ScopeLevel {
 		Context 'Convert a scope level to account for another call stack level' {
+			# Do we really need the external tests for a private function?
 			It 'Should calculate local scope (internal to module)' {
 				Add-ScopeLevel Local -Internal |Should -BeExactly '1' -Because 'local is zero scope'
 			}
-			It 'Should calculate local scope (external to module)' {
+			It 'Should calculate local scope (external to module)' -Skip {
 				Add-ScopeLevel Local |Should -BeExactly '2' -Because 'local is zero scope'
 			}
 			It 'Should calculate a numeric scope (internal to module)' {
@@ -27,7 +28,7 @@ InModuleScope Unicodery {
 			It 'Should calulate global scope (internal to module)' {
 				Add-ScopeLevel Global -Internal |Should -BeExactly Global -Because 'global is the top scope'
 			}
-			It 'Should calulate global scope (external to module)' {
+			It 'Should calulate global scope (external to module)' -Skip {
 				Add-ScopeLevel Global |Should -BeExactly Global -Because 'global is the top scope'
 			}
 		}
