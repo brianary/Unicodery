@@ -95,6 +95,6 @@ Process
 		if($cc.ContainsKey($Name)) {return $cc[$Name] |ConvertTo-Char}
 		elseif($github.ContainsKey($Name)) {return $github[$Name] |ConvertTo-Char}
 		elseif($html.ContainsKey($Name)) {return ($html[$Name].characters -join '') + ($AsEmoji ? [char]0xFE0F : '')}
-		else {return $codepoint[$Name] |ConvertTo-Char}
+		else {return $codepoint[$Name.Replace('_',' ')] |ConvertTo-Char}
 	}
 }
