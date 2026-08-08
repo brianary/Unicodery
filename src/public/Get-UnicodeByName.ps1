@@ -51,6 +51,11 @@ Appends a U+FE0F VARIATION SELECTOR-16 suffix to the character, which suggests a
 for characters that support both a simple text presentation as well as a color emoji-style one.
 #>
 [switch] $AsEmoji,
+<#
+Appends a U+FE0E VARIATION SELECTOR-15 suffix to the character, which suggests a textual presentation
+(non-emoji) for characters that support both a simple text presentation as well as a color emoji-style one.
+#>
+[Alias('NotEmoji','AsPlainText')][switch] $AsText,
 # Update the character name database.
 [Parameter(ParameterSetName='Update')][switch] $Update
 )
@@ -61,11 +66,14 @@ Begin
 	$codepoint = ConvertFrom-StringData (Get-Content "$basename.txt" -Raw)
 	$html = Get-Content "$basename.html.json" -Raw |ConvertFrom-Json -AsHashtable
 	$github = ConvertFrom-StringData (Get-Content "$basename.github.txt" -Raw)
-	filter ConvertTo-Char([Parameter(ValueFromPipeline)][string] $Value)
+	filter ConvertTo-Char
 	{
-		$result = (($Value -split '\W+') |
+		Param(
+		[Parameter(Position=0)][AllowNull()][string] $Suffix,
+		[Parameter(ValueFromPipeline=$true,Mandatory=$true)][string] $Value
+		)
+		return (($Value -split '\W+') |
 			ForEach-Object {[char]::ConvertFromUtf32([convert]::ToInt32($_,16))}) -join ''
-		return $AsEmoji ? $result + ([char]0xFE0F) : $result
 	}
 }
 Process
@@ -92,9 +100,12 @@ Process
 	}
 	else
 	{
-		if($cc.ContainsKey($Name)) {return $cc[$Name] |ConvertTo-Char}
-		elseif($github.ContainsKey($Name)) {return $github[$Name] |ConvertTo-Char}
-		elseif($html.ContainsKey($Name)) {return ($html[$Name].characters -join '') + ($AsEmoji ? [char]0xFE0F : '')}
-		else {return $codepoint[$Name.Replace('_',' ')] |ConvertTo-Char}
+		$spName = $Name.Replace('_',' ')
+		$suffix = $AsEmoji ? "$([char]0xFE0F)" : $AsText ? "$([char]0xFE0E)" : $null
+		if($cc.ContainsKey($spName)) {return $cc[$spName] |ConvertTo-Char $suffix}
+		elseif($github.ContainsKey($Name)) {return $github[$Name] |ConvertTo-Char $suffix}
+		elseif($html.ContainsKey($spName)) {return ($html[$spName].characters -join '') + $suffix}
+		elseif($codepoint.ContainsKey($spName)) {return $codepoint[$spName] |ConvertTo-Char $suffix}
+		else {throw "Unable to locate character by name '$Name'"}
 	}
 }
