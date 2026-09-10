@@ -5,7 +5,7 @@ Returns the current (cached) Unicode character data.
 .OUTPUTS
 System.Management.Automation.PSCustomObject for each character entry with these properties:
 * BidirectionalCategory
-* Catgory
+* Category
 * CombiningClass
 * Comment
 * DecimalDigitValue
@@ -38,37 +38,41 @@ Saves the current Unicode data as a CSV file.
 # The local location to cache the data to.
 [string] $DataFile = (Join-Path ([io.path]::GetTempPath()) ($Url.Segments[-1]))
 )
-
-function Save-Data
+Begin
 {
-	[CmdletBinding()] Param()
-    if(!(Test-Path $DataFile -Type Leaf))
-    {
-        $http = Invoke-WebRequest $Url -OutFile $DataFile -PassThru
-        Write-Information "Downloaded $Url to $DataFile"
-        [datetime] $lastmod = "$($http.Headers['Last-Modified'])"
-        (Get-Item $DataFile).LastWriteTime = $lastmod
-    }
-    else
-    {
-        $http = Invoke-WebRequest $Url -Method Head
-        [datetime] $lastmod = "$($http.Headers['Last-Modified'])"
-        if((Get-Item $DataFile).LastWriteTime -lt $lastmod)
-        {
-            Invoke-WebRequest $Url -OutFile $DataFile
-            Write-Information "Updated $Url to $(Join-Path $PWD $DataFile)"
-            (Get-Item $DataFile).LastWriteTime = $lastmod
-        }
-    }
-}
+	function Save-Data
+	{
+		[CmdletBinding()] Param()
+		if(!(Test-Path $DataFile -Type Leaf))
+		{
+			$http = Invoke-WebRequest $Url -OutFile $DataFile -PassThru
+			Write-Information "Downloaded $Url to $DataFile"
+			[datetime] $lastmod = "$($http.Headers['Last-Modified'])"
+			(Get-Item $DataFile).LastWriteTime = $lastmod
+		}
+		else
+		{
+			$http = Invoke-WebRequest $Url -Method Head
+			[datetime] $lastmod = "$($http.Headers['Last-Modified'])"
+			if((Get-Item $DataFile).LastWriteTime -lt $lastmod)
+			{
+				Invoke-WebRequest $Url -OutFile $DataFile
+				Write-Information "Updated $Url to $(Join-Path $PWD $DataFile)"
+				(Get-Item $DataFile).LastWriteTime = $lastmod
+			}
+		}
+	}
 
-function Read-Data
+	function Read-Data
+	{
+		[CmdletBinding()] Param()
+		Import-Csv $DataFile -Delimiter ';' -Header Value,Name,Category,CombiningClass,BidirectionalCategory,
+			DecompositionMapping,DecimalDigitValue,DigitValue,NumericValue,Mirrored,OldName,Comment,
+			Upper,Lower,Title
+	}
+}
+Process
 {
-	[CmdletBinding()] Param()
-	Import-Csv $DataFile -Delimiter ';' -Header Value,Name,Catgory,CombiningClass,BidirectionalCategory,
-		DecompositionMapping,DecimalDigitValue,DigitValue,NumericValue,Mirrored,OldName,Comment,
-		Upper,Lower,Title
+	Save-Data
+	Read-Data
 }
-
-Save-Data
-Read-Data

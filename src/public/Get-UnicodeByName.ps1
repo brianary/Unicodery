@@ -72,8 +72,8 @@ Begin
 		[Parameter(Position=0)][AllowNull()][string] $Suffix,
 		[Parameter(ValueFromPipeline=$true,Mandatory=$true)][string] $Value
 		)
-		return (($Value -split '\W+') |
-			ForEach-Object {[char]::ConvertFromUtf32([convert]::ToInt32($_,16))}) -join ''
+		return ((($Value -split '\W+') |
+			ForEach-Object {[char]::ConvertFromUtf32([convert]::ToInt32($_,16))}) -join '') + $Suffix
 	}
 }
 Process
