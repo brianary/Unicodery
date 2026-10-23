@@ -13,6 +13,7 @@ Cmdlets to search, lookup, and get details about Unicode characters.
 
 <img src="images/demo.gif" alt="a demonstration of the module commands" height="300" width="600" />
 
+- [Find-UnicodeByName](https://github.com/brianary/Unicodery/wiki/Find-UnicodeByName): Search Unicode code point names.
 - [Get-CharacterDetails](https://github.com/brianary/Unicodery/wiki/Get-CharacterDetails): Returns filterable categorical information about characters in the Unicode Basic Multilingual Plane.
 - [Get-Unicode](https://github.com/brianary/Unicodery/wiki/Get-Unicode): Returns the (UTF-16) .NET string for a given Unicode codepoint, which may be a surrogate pair.
 - [Get-UnicodeByName](https://github.com/brianary/Unicodery/wiki/Get-UnicodeByName): Returns characters based on Unicode code point name, GitHub short code, or HTML entity.
