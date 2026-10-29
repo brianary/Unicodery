@@ -40,6 +40,8 @@ Begin
 		)
 		return Find-UnicodeName $Query
 	}
+
+	Update-UnicodeCache
 }
 Process
 {

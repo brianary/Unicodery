@@ -15,8 +15,7 @@ FunctionsToExport = @('*') # '*'
 CmdletsToExport = @() # '*'
 VariablesToExport = @() # '*'
 # AliasesToExport = @()
-FileList = @('Unicodery.psd1','Unicodery.psm1','data/UnicodeByName.cc.txt','data/UnicodeByName.github.txt',
-'data/UnicodeByName.html.json','data/UnicodeByName.txt','data/UnicodeName.cc.txt','data/UnicodeName.txt')
+FileList = @('Unicodery.psd1','Unicodery.psm1')
 PrivateData = @{
 	PSData = @{
 		Tags = @('Unicode', 'Character', 'CodePoint', 'Glyph', 'Rune')

@@ -31,9 +31,9 @@ SPACE
 )
 Begin
 {
-	$basename = Join-Path -Path $PSScriptRoot -ChildPath data -AdditionalChildPath UnicodeName
-	$cc = ConvertFrom-StringData (Get-Content "$basename.cc.txt" -Raw)
-	$name = ConvertFrom-StringData (Get-Content "$basename.txt" -Raw)
+	Update-UnicodeCache
+	$cc = ConvertFrom-StringData (Get-Content (Join-Path $PSScriptRoot UnicodeByName.cc.txt) -Raw)
+	$name = ConvertFrom-StringData (Get-Content (Get-CachePath UnicodeName.txt) -Raw)
 }
 Process
 {
