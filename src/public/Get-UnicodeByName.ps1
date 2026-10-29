@@ -55,14 +55,13 @@ for characters that support both a simple text presentation as well as a color e
 Appends a U+FE0E VARIATION SELECTOR-15 suffix to the character, which suggests a textual presentation
 (non-emoji) for characters that support both a simple text presentation as well as a color emoji-style one.
 #>
-[Alias('NotEmoji','AsPlainText')][switch] $AsText,
-# Update the character name database.
-[Parameter(ParameterSetName='Update')][switch] $Update
+[Alias('NotEmoji','AsPlainText')][switch] $AsText
 )
 Begin
 {
-	$basename = Join-Path $PSScriptRoot data UnicodeByName
-	$cc = ConvertFrom-StringData (Get-Content "$basename.cc.txt" -Raw)
+	Update-UnicodeCache
+	$basename = Get-CachePath UnicodeByName
+	$cc = ConvertFrom-StringData (Get-Content (Join-Path $PSScriptRoot UnicodeByName.cc.txt) -Raw)
 	$codepoint = ConvertFrom-StringData (Get-Content "$basename.txt" -Raw)
 	$html = Get-Content "$basename.html.json" -Raw |ConvertFrom-Json -AsHashtable
 	$github = ConvertFrom-StringData (Get-Content "$basename.github.txt" -Raw)
@@ -78,34 +77,11 @@ Begin
 }
 Process
 {
-	if($Update)
-	{
-		$conflictingOldNames = '0007','01B7','0292','0404','0406','0454','0456','10D0','10D1','10D2','10D3','10D4',
-			'10D5','10D6','10D7','10D8','10D9','10DA','10DB','10DC','10DD','10DE','10DF','10E0','10E1','10E2','10E3',
-			'10E4','10E5','10E6','10E7','10E8','10E9','10EA','10EB','10EC','10ED','10EE','10EF','10F0','10F1','10F2',
-			'10F3','10F4','10F5','2016','314A','314B','314D','3209','320A','320C','3269','326A','326C','33B7','FFBA',
-			'FFBB','FFBD'
-		Get-UnicodeData |
-			ForEach-Object {
-				if($_.OldName -and $_.Value -notin $conflictingOldNames){$_.OldName+'='+$_.Value}
-				if($_.Name -ne '<control>'){$_.Name+'='+$_.Value}
-			} |Out-File "$basename.txt" -Encoding utf8
-		Invoke-WebRequest https://html.spec.whatwg.org/entities.json -OutFile "$basename.html.json"
-		(Invoke-RestMethod https://api.github.com/emojis).PSObject.Properties |
-			Where-Object {$_.Value -notlike "*/$($_.Name).png[?]v8"} |
-			ForEach-Object {':'+$_.Name+':='+(((([uri]$_.Value).Segments[-1]) -replace '\.png\z').ToUpper() -replace '-',',')} |
-			Out-File "$basename.github.txt" -Encoding utf8
-		Write-Information 'Updated.'
-		return
-	}
-	else
-	{
-		$spName = $Name.Replace('_',' ')
-		$suffix = $AsEmoji ? "$([char]0xFE0F)" : $AsText ? "$([char]0xFE0E)" : $null
-		if($cc.ContainsKey($spName)) {return $cc[$spName] |ConvertTo-Char $suffix}
-		elseif($github.ContainsKey($Name)) {return $github[$Name] |ConvertTo-Char $suffix}
-		elseif($html.ContainsKey($spName)) {return ($html[$spName].characters -join '') + $suffix}
-		elseif($codepoint.ContainsKey($spName)) {return $codepoint[$spName] |ConvertTo-Char $suffix}
-		else {throw "Unable to locate character by name '$Name'"}
-	}
+	$spName = $Name.Replace('_',' ')
+	$suffix = $AsEmoji ? "$([char]0xFE0F)" : $AsText ? "$([char]0xFE0E)" : $null
+	if($cc.ContainsKey($spName)) {return $cc[$spName] |ConvertTo-Char $suffix}
+	elseif($github.ContainsKey($Name)) {return $github[$Name] |ConvertTo-Char $suffix}
+	elseif($html.ContainsKey($spName)) {return ($html[$spName].characters -join '') + $suffix}
+	elseif($codepoint.ContainsKey($spName)) {return $codepoint[$spName] |ConvertTo-Char $suffix}
+	else {throw "Unable to locate character by name '$Name'"}
 }
