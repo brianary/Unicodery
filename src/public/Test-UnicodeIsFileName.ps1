@@ -41,10 +41,11 @@ True
 )
 Begin
 {
+	[regex] $posixMatch = '\A[-A-Za-z0-9_.]+\z'
 	[char[]] $posixPortableChars = @('A'..'Z')+@('a'..'z')+@('0'..'9')+@('.','_','-')
     [char[]] $invalidFileNameChars = $CurrentPlatformOnly ?
 		([IO.Path]::GetInvalidFileNameChars()) :
-        @(0..0x1F)+@('"','*','/',':','<','>','?','\','|',0x7F)
+        @(0..0x1F)+[char[]]"`"*/:<>?\|`u{7F}"
 	[regex] $badFileMatch = ($CurrentPlatformOnly -and !$IsWindows) ? '\A-' : '\A-|\.\z'
 	[string[]] $badFilenames = ($CurrentPlatformOnly -and !$IsWindows) ? @('.','..') :
 		@('.','..','CON','PRN','AUX','NUL')+@(0..9 |ForEach-Object {"COM$_","LPT$_"})
@@ -59,7 +60,7 @@ Process
 			{
 				return $InputString -notin $badFilenames -and
 					$InputString -notmatch $badFileMatch -and
-					$InputString -match '\A[-A-Za-z0-9_.]+\z'
+					$InputString -match $posixMatch
 			}
 			Character {return $InputCharacter -in $posixPortableChars}
 		}
@@ -69,6 +70,7 @@ Process
 		String
 		{
 			return $InputString -notin $badFilenames -and
+				$InputString -notmatch $badFileMatch -and
 				$InputString.IndexOfAny($invalidFileNameChars) -eq -1
 		}
 		Character {return $InputCharacter -notin $invalidFileNameChars}
