@@ -24,7 +24,9 @@ True
 # A string to check for all characters' validity for usernames.
 [Parameter(ParameterSetName='String',Position=0,Mandatory=$true,ValueFromPipeline=$true)][string] $InputString,
 # A character to check as valid for username use.
-[Parameter(ParameterSetName='Character',Position=0,Mandatory=$true,ValueFromPipeline=$true)][char] $InputCharacter
+[Parameter(ParameterSetName='Character',Position=0,Mandatory=$true,ValueFromPipeline=$true)][char] $InputCharacter,
+# A rune to check as valid for filename use.
+[Parameter(ParameterSetName='Rune',Position=0,Mandatory=$true,ValueFromPipeline=$true)][text.rune] $InputRune
 )
 Process
 {
@@ -32,5 +34,6 @@ Process
 	{
 		Character {return $InputCharacter -match '\w'}
 		String {return $InputString -match '\A\w+\z'}
+		Rune {return $InputRune -match '\w'}
 	}
 }

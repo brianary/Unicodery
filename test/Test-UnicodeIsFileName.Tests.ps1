@@ -4,8 +4,15 @@ Tests True if the input is valid in a Windows path.
 #>
 
 if(!(&"$PSScriptRoot/../scripts/Test-RelevantTest.ps1")) {return}
-[char[]] $posixPortable = @('A'..'Z')+@('a'..'z')+@('0'..'9')+@('.','_','-')
+[char[]] $posixPortable = @('A'..'Z')+@('a'..'z')+[char[]]'0123456798._-'
 [char[]] $invalidChars = @(0..0x1F)+[char[]]"`"*/:<>?\|`u{7F}"
+function ConvertTo-Rune
+{
+	[CmdletBinding()] Param(
+	[Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true)][string] $Value
+	)
+	return $Value.EnumerateRunes() |Select-Object -First 1
+}
 BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
@@ -35,15 +42,35 @@ Describe 'Test-UnicodeIsFileName' -Tag Test-UnicodeIsFileName,Test,UnicodeIsFile
 			@{ InputString = '<INPUT>' }
 		) {
 			Param([string]$InputString)
-			Test-UnicodeIsFileName $InputString |Should -BeFalse -Because 'the pipeline should work'
+			Test-UnicodeIsFileName $InputString |Should -BeFalse -Because 'the parameter should work'
 			$InputString |Test-UnicodeIsFileName |Should -BeFalse -Because 'the pipeline should work'
 		}
 		It "Should be true for valid string '<InputString>'" -TestCases @(
 			Get-ChildItem -Recurse -File |ForEach-Object {@{ InputString = $_.Name }}
 		) {
 			Param([string]$InputString)
-			Test-UnicodeIsFileName $InputString |Should -BeTrue -Because 'the pipeline should work'
+			Test-UnicodeIsFileName $InputString |Should -BeTrue -Because 'the parameter should work'
 			$InputString |Test-UnicodeIsFileName |Should -BeTrue -Because 'the pipeline should work'
+		}
+		It "Should be false for invalid rune '<InputRune>'" -TestCases @(
+			@{ InputRune = '/' |ConvertTo-Rune }
+			@{ InputRune = '*' |ConvertTo-Rune }
+			@{ InputRune = '<' |ConvertTo-Rune }
+		) {
+			Param([text.rune]$InputRune)
+			Test-UnicodeIsFileName $InputRune |Should -BeFalse -Because 'the parameter should work'
+			$InputRune |Test-UnicodeIsFileName |Should -BeFalse -Because 'the pipeline should work'
+		}
+		It "Should be true for valid rune '<InputRune>'" -TestCases @(
+			@{ InputRune = 'A' |ConvertTo-Rune }
+			@{ InputRune = '.' |ConvertTo-Rune }
+			@{ InputRune = '_' |ConvertTo-Rune }
+			@{ InputRune = '📥️' |ConvertTo-Rune }
+			@{ InputRune = '🖖🏻' |ConvertTo-Rune }
+		) {
+			Param([text.rune]$InputRune)
+			Test-UnicodeIsFileName $InputRune |Should -BeTrue -Because 'the parameter should work'
+			$InputRune |Test-UnicodeIsFileName |Should -BeTrue -Because 'the pipeline should work'
 		}
 	}
 	Context 'True if the input is valid in a POSIX portable filename' {
@@ -69,15 +96,35 @@ Describe 'Test-UnicodeIsFileName' -Tag Test-UnicodeIsFileName,Test,UnicodeIsFile
 				ForEach-Object {@{ InputString = $_ }}
 		) {
 			Param([string]$InputString)
-			Test-UnicodeIsFileName $InputString -PosixPortable |Should -BeFalse -Because 'the pipeline should work'
+			Test-UnicodeIsFileName $InputString -PosixPortable |Should -BeFalse -Because 'the parameter should work'
 			$InputString |Test-UnicodeIsFileName -PosixPortable |Should -BeFalse -Because 'the pipeline should work'
 		}
 		It "Should be true for valid string '<InputString>'" -TestCases @(
 			Get-ChildItem -Recurse -File |ForEach-Object {@{ InputString = $_.Name }}
 		) {
 			Param([string]$InputString)
-			Test-UnicodeIsFileName $InputString -PosixPortable |Should -BeTrue -Because 'the pipeline should work'
+			Test-UnicodeIsFileName $InputString -PosixPortable |Should -BeTrue -Because 'the parameter should work'
 			$InputString |Test-UnicodeIsFileName -PosixPortable |Should -BeTrue -Because 'the pipeline should work'
+		}
+		It "Should be false for invalid rune '<InputRune>'" -TestCases @(
+			@{ InputRune = '/' |ConvertTo-Rune }
+			@{ InputRune = '*' |ConvertTo-Rune }
+			@{ InputRune = '<' |ConvertTo-Rune }
+			@{ InputRune = '📥️' |ConvertTo-Rune }
+			@{ InputRune = '🖖🏻' |ConvertTo-Rune }
+		) {
+			Param([text.rune]$InputRune)
+			Test-UnicodeIsFileName -InputRune $InputRune -PosixPortable |Should -BeFalse -Because 'the parameter should work'
+			$InputRune |Test-UnicodeIsFileName -PosixPortable |Should -BeFalse -Because 'the pipeline should work'
+		}
+		It "Should be true for valid rune '<InputRune>'" -TestCases @(
+			@{ InputRune = 'A' |ConvertTo-Rune }
+			@{ InputRune = '.' |ConvertTo-Rune }
+			@{ InputRune = '_' |ConvertTo-Rune }
+		) {
+			Param([text.rune]$InputRune)
+			Test-UnicodeIsFileName -InputRune $InputRune -PosixPortable |Should -BeTrue -Because 'the parameter should work'
+			$InputRune |Test-UnicodeIsFileName -PosixPortable |Should -BeTrue -Because 'the pipeline should work'
 		}
 	}
 }
