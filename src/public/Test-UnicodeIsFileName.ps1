@@ -33,6 +33,8 @@ True
 [Parameter(ParameterSetName='String',Position=0,Mandatory=$true,ValueFromPipeline=$true)][string] $InputString,
 # A character to check as valid for filename use.
 [Parameter(ParameterSetName='Character',Position=0,Mandatory=$true,ValueFromPipeline=$true)][char] $InputCharacter,
+# A rune to check as valid for filename use.
+[Parameter(ParameterSetName='Rune',Position=0,Mandatory=$true,ValueFromPipeline=$true)][text.rune] $InputRune,
 # Indicates that only characters invalid for the current platform should be excluded by default,
 # otherwise invalid characters from any platform will be excluded by default (unless overridden).
 [switch] $CurrentPlatformOnly,
@@ -42,7 +44,7 @@ True
 Begin
 {
 	[regex] $posixMatch = '\A[-A-Za-z0-9_.]+\z'
-	[char[]] $posixPortableChars = @('A'..'Z')+@('a'..'z')+@('0'..'9')+@('.','_','-')
+	[char[]] $posixPortableChars = @('A'..'Z')+@('a'..'z')+[char[]]'0123456798._-'
     [char[]] $invalidFileNameChars = $CurrentPlatformOnly ?
 		([IO.Path]::GetInvalidFileNameChars()) :
         @(0..0x1F)+[char[]]"`"*/:<>?\|`u{7F}"
@@ -63,6 +65,7 @@ Process
 					$InputString -match $posixMatch
 			}
 			Character {return $InputCharacter -in $posixPortableChars}
+			Rune {return $InputRune.IsBmp ? ([char]$InputRune.Value) -in $posixPortableChars : $false}
 		}
 	}
 	switch($PSCmdlet.ParameterSetName)
@@ -74,5 +77,6 @@ Process
 				$InputString.IndexOfAny($invalidFileNameChars) -eq -1
 		}
 		Character {return $InputCharacter -notin $invalidFileNameChars}
+		Rune {return $InputRune.IsBmp ? ([char]$InputRune.Value) -notin $invalidFileNameChars : $true}
 	}
 }
