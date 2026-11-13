@@ -4,7 +4,7 @@ Tests True if the input is valid in a Windows path.
 #>
 
 if(!(&"$PSScriptRoot/../scripts/Test-RelevantTest.ps1")) {return}
-[char[]] $posixPortable = @('A'..'Z')+@('a'..'z')+@('0'..'9')+@('.','_','-')
+[char[]] $posixPortable = @('A'..'Z')+@('a'..'z')+[char[]]'0123456798._-'
 [char[]] $invalidChars = @(0..0x1F)+[char[]]",;:?`"[]*/\+<=>|`u{7F}"
 BeforeAll {
 	Set-StrictMode -Version Latest

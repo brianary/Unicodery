@@ -54,7 +54,7 @@ True
 Begin
 {
 	[regex] $posixMatch = '\A[-A-Za-z0-9_.]+\z'
-	[char[]] $posixPortableChars = @('A'..'Z')+@('a'..'z')+@('0'..'9')+@('.','_','-')
+	[char[]] $posixPortableChars = @('A'..'Z')+@('a'..'z')+[char[]]'0123456798._-'
     [char[]] $invalidUserNameChars = !$CurrentPlatformOnly ? @(0..0x1F)+[char[]]",;:?`"[]*/\+<=>|`u{7F}" :
 		$IsWindows ? @(0..0x1F)+[char[]]",;:?`"[]*/\+<=>|" :
 		$IsLinux ? @(0..0x20)+[char[]]":/" :

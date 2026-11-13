@@ -41,6 +41,22 @@ Describe 'Test-UnicodeIsWord' -Tag Test-UnicodeIsWord,Test,UnicodeIsWord {
 			$InputString |Test-UnicodeIsWord |Should -BeTrue -Because 'pipline should work'
 		}
 	}
+	Context 'True if the rune matches the regular expression \w.' {
+		It "Returns false for '<InputRune>'" -TestCases @(
+			[text.rune[]]@(0..0xFF) |Where-Object {$_ -match '\W'} |ForEach-Object {@{ InputRune = $_ }}
+		) {
+			Param([text.rune]$InputRune)
+			Test-UnicodeIsWord -InputRune $InputRune |Should -BeFalse -Because 'parameter should work'
+			$InputRune |Test-UnicodeIsWord |Should -BeFalse -Because 'pipline should work'
+		}
+		It "Returns true for '<InputCharacter>'" -TestCases @(
+			[text.rune[]]@(0..0xFF) |Where-Object {$_ -match '\w'} |ForEach-Object {@{ InputRune = $_ }}
+		) {
+			Param([text.rune]$InputRune)
+			Test-UnicodeIsWord -InputRune $InputRune |Should -BeTrue -Because 'parameter should work'
+			$InputRune |Test-UnicodeIsWord |Should -BeTrue -Because 'pipline should work'
+		}
+	}
 }
 AfterAll {
 	&"$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
