@@ -15,9 +15,9 @@ Unicode
 https://learn.microsoft.com/dotnet/standard/base-types/regular-expression-language-quick-reference
 
 .EXAMPLE
-Test-UnicodeIsWord A
+Test-UnicodeIsWhiteSpace A
 
-True
+False
 #>
 
 [CmdletBinding()][OutputType([bool])] Param(
