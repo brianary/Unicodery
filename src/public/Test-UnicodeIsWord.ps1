@@ -1,12 +1,12 @@
 ﻿<#
 .SYNOPSIS
-True if the character matches the regular expression \w.
+True if the input is alphanumeric or underscore.
 
 .INPUTS
-System.String or System.Character to check whether the input is valid for a username.
+System.String or System.Character to check whether the input is alphanumeric or underscore.
 
 .OUTPUTS
-System.Boolean indicating the input is valid for a username.
+System.Boolean indicating the input is alphanumeric or underscore.
 
 .FUNCTIONALITY
 Unicode
@@ -21,11 +21,11 @@ True
 #>
 
 [CmdletBinding()][OutputType([bool])] Param(
-# A string to check for all characters' validity for usernames.
+# A string to test as being fully alphanumeric (including underscore).
 [Parameter(ParameterSetName='String',Position=0,Mandatory=$true,ValueFromPipeline=$true)][string] $InputString,
-# A character to check as valid for username use.
+# A character to check as being alphanumeric (including underscore).
 [Parameter(ParameterSetName='Character',Position=0,Mandatory=$true,ValueFromPipeline=$true)][char] $InputCharacter,
-# A rune to check as valid for filename use.
+# A rune to check as being alphanumeric (including underscore).
 [Parameter(ParameterSetName='Rune',Position=0,Mandatory=$true,ValueFromPipeline=$true)][text.rune] $InputRune
 )
 Process
