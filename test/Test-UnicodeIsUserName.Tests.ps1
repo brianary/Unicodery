@@ -10,7 +10,7 @@ BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 }
-Describe 'Test-UnicodeIsUserName' -Tag Test-UnicodeIsUserName,Test,UnicodeIsUserName {
+Describe 'Test-UnicodeIsUserName' -Tag Test-UnicodeIsUserName,Test,UnicodeIsUserName,IsUserName {
 	Context 'True if the input is valid in a filename' {
 		It "Should be false for invalid character '<InputCharacter>'" -TestCases @(
 	        $invalidChars |
