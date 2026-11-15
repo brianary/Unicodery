@@ -15,7 +15,7 @@ Unicode
 https://learn.microsoft.com/dotnet/standard/base-types/regular-expression-language-quick-reference
 
 .EXAMPLE
-Test-UnicodeIsWord A
+Test-UnicodeIsUppercase A
 
 True
 #>
