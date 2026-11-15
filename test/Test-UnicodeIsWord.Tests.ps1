@@ -8,7 +8,7 @@ BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 }
-Describe 'Test-UnicodeIsWord' -Tag Test-UnicodeIsWord,Test,UnicodeIsWord {
+Describe 'Test-UnicodeIsWord' -Tag Test-UnicodeIsWord,Test,UnicodeIsWord,IsWord {
 	Context 'True if the character matches the regular expression \w.' {
 		It "Returns false for '<InputCharacter>'" -TestCases @(
 			[char[]]@(0..0xFF) |Where-Object {$_ -match '\W'} |ForEach-Object {@{ InputCharacter = $_ }}

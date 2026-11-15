@@ -17,7 +17,7 @@ BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 }
-Describe 'Test-UnicodeIsFileName' -Tag Test-UnicodeIsFileName,Test,UnicodeIsFileName {
+Describe 'Test-UnicodeIsFileName' -Tag Test-UnicodeIsFileName,Test,UnicodeIsFileName,IsFileName {
 	Context 'True if the input is valid in a filename' {
 		It "Should be false for invalid character '<InputCharacter>'" -TestCases @(
 	        $invalidChars |

@@ -8,8 +8,8 @@ BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 }
-Describe 'Test-UnicodeIsWhiteSpace' -Tag Test-UnicodeIsWhiteSpace,Test,UnicodeIsWord {
-	Context 'True if the character matches the regular expression \w.' {
+Describe 'Test-UnicodeIsWhiteSpace' -Tag Test-UnicodeIsWhiteSpace,Test,UnicodeIsWhiteSpace,IsWhiteSpace {
+	Context 'True if the character matches the regular expression \s.' {
 		It "Returns false for '<InputCharacter>'" -TestCases @(
 			[char[]]@(0..0xFF) |Where-Object {$_ -match '\S'} |ForEach-Object {@{ InputCharacter = $_ }}
 		) {
@@ -25,7 +25,7 @@ Describe 'Test-UnicodeIsWhiteSpace' -Tag Test-UnicodeIsWhiteSpace,Test,UnicodeIs
 			$InputCharacter |Test-UnicodeIsWhiteSpace |Should -BeTrue -Because 'pipline should work'
 		}
 	}
-	Context 'True if the entire string matches the regular expression \w.' {
+	Context 'True if the entire string matches the regular expression \s.' {
 		It "Returns false for '<InputString>'" -TestCases @(
 			@{ InputString = '.' }
 			@{ InputString = ' x' }
@@ -46,7 +46,7 @@ Describe 'Test-UnicodeIsWhiteSpace' -Tag Test-UnicodeIsWhiteSpace,Test,UnicodeIs
 			$InputString |Test-UnicodeIsWhiteSpace |Should -BeTrue -Because 'pipline should work'
 		}
 	}
-	Context 'True if the rune matches the regular expression \w.' {
+	Context 'True if the rune matches the regular expression \s.' {
 		It "Returns false for '<InputRune>'" -TestCases @(
 			[text.rune[]]@(0..0xFFF) |Where-Object {$_ -match '\S'} |ForEach-Object {@{ InputRune = $_ }}
 		) {
