@@ -8,7 +8,7 @@ BeforeAll {
 	Set-StrictMode -Version Latest
 	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 }
-Describe 'Test-UnicodeIsSurrogate' -Tag Test-UnicodeIsSurrogate,Test,UnicodeIsSurrogate,IsSurrogate {
+Describe 'Test-UnicodeIsSurrogate' -Tag Test-UnicodeIsSurrogate,Test,UnicodeIsSurrogate,IsSurrogate,Surrogate {
 	Context 'True if the character is a surrogate.' {
 		It "Returns false for '<InputCharacter>'" -TestCases @(
 			[char[]]@(0..0xFF) |ForEach-Object {@{ InputCharacter = $_ }}
