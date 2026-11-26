@@ -25,9 +25,7 @@ SPACE
 # The numeric value of the Unicode character.
 [Parameter(ParameterSetName='CodePoint',Position=0,Mandatory=$true,ValueFromPipeline=$true)][int] $CodePoint,
 # The Unicode character.
-[Parameter(ParameterSetName='Character',Position=0,Mandatory=$true,ValueFromPipeline=$true)][string] $Character,
-# Update the character name database.
-[Parameter(ParameterSetName='Update')][switch] $Update
+[Parameter(ParameterSetName='Character',Position=0,Mandatory=$true,ValueFromPipeline=$true)][string] $Character
 )
 Begin
 {
@@ -39,21 +37,7 @@ Process
 {
 	switch($PSCmdlet.ParameterSetName)
 	{
-		Update
-		{
-			Get-UnicodeData |
-				Select-Object Value,@{n='Name';e={
-					$hex = '{0:X4}' -f $_.Value
-					$cc.ContainsKey($hex) ? $cc[$hex] : $_.Name
-				}} |
-				Export-Csv "$basename.txt" -Delimiter '=' -UseQuotes AsNeeded
-			Write-Information 'Updated.'
-			return
-		}
-		Character
-		{
-			return $Character.GetEnumerator() |ForEach-Object {[int]$_} |Get-UnicodeName
-		}
+		Character {return $Character.GetEnumerator() |ForEach-Object {[int]$_} |Get-UnicodeName}
 		default
 		{
 			$hex = '{0:X4}' -f $CodePoint

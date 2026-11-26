@@ -49,6 +49,44 @@ Begin
 			} |Out-File $UnicodeByName -Append
 	}
 
+	function Save-UnicodeBlockData
+	{
+		[CmdletBinding()][OutputType([datetime])] Param()
+		Write-Verbose "Saving Unicode database to '$(Get-CachePath Blocks.txt)'"
+		$UnicodeBlockData = Update-CacheItem https://www.unicode.org/Public/UCD/latest/ucd/Blocks.txt Blocks.txt
+		return (Get-Item $UnicodeBlockData).LastWriteTime
+	}
+
+	function ConvertTo-BlockMatchName
+	{
+		[CmdletBinding()][OutputType([string])] Param(
+		[Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true)][string] $FullName
+		)
+		try{"$([regex]"\p{Is$($FullName -replace '\s+')}")"}catch{}
+	}
+
+	function Save-UnicodeBlockLookup
+	{
+		[CmdletBinding()] Param(
+		[Parameter(Position=0,Mandatory=$true)][string] $BlockLookup
+		)
+		$BlockData = Get-CachePath Blocks.txt
+		Get-Content $BlockData |
+			ConvertFrom-StringData -Delimiter ';' |
+			ForEach-Object {$_.GetEnumerator()} |
+			ForEach-Object {
+				$from, $to = $_.Key -split '\.\.',2
+				[pscustomobject]@{
+					RangeFrom  = [convert]::ToInt32($from,16)
+					RangeTo    = [convert]::ToInt32($to,16)
+					BlockName  = $_.Value
+					BlockMatch = ConvertTo-BlockMatchName $_.Value
+					BlockId    = $_.Value -replace '\W+'
+				}
+			} |
+			Export-Csv $BlockLookup -Encoding ascii -UseQuotes AsNeeded
+	}
+
 	function Save-UnicodeByNameGitHub
 	{
 		[CmdletBinding()] Param()
@@ -89,6 +127,14 @@ Begin
 			(Get-Item $UnicodeByName).LastWriteTime -lt $UnicodeDataLastMod)
 		{
 			Save-UnicodeByName $UnicodeByName
+		}
+
+		$UnicodeBlockDataLastMod = Save-UnicodeBlockData
+		$BlockLookup = Get-CachePath BlockNames.csv
+		if(!(Test-Path $BlockLookup -Type Leaf) -or
+			(Get-Item $BlockLookup).LastWriteTime -lt $UnicodeBlockDataLastMod)
+		{
+			Save-UnicodeBlockLookup $BlockLookup
 		}
 
 		$UnicodeByNameHtml = Update-CacheItem https://html.spec.whatwg.org/entities.json UnicodeByName.html.json
